@@ -87,7 +87,7 @@ public class Login extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addGap(26, 26, 26)
                             .addComponent(txtPassword))))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
