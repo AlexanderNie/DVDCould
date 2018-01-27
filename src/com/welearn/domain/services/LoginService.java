@@ -7,9 +7,16 @@ package com.welearn.domain.services;
 
 import com.welearn.domain.entities.Staff;
 import com.welearn.utils.HibernateUtil;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -62,19 +69,31 @@ public class LoginService {
     private void setupStaffList(List resultList) {
         for (Object o : resultList) {
             Staff staff = (Staff) o;
-            getStaffByUsername().put(staff.getUsername(), staff.getPassword());
+            getStaffByUsername().put(staff.getUsername().toLowerCase(), staff.getPassword());
         }
     }
 
    
 
     private boolean validatePassword(String username, String userinput) {
-        String password = getStaffByUsername().get(username);
-        if(userinput.equals(password))
-            return true;
-        else
-            return false;
-        
+        String password = getStaffByUsername().get(username.toLowerCase());
+        try {
+            if(EncryptionService.encrypt(userinput).equals(password))
+                return true;
+            else
+                return false;
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(LoginService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchPaddingException ex) {
+            Logger.getLogger(LoginService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeyException ex) {
+            Logger.getLogger(LoginService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalBlockSizeException ex) {
+            Logger.getLogger(LoginService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BadPaddingException ex) {
+            Logger.getLogger(LoginService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     /**
